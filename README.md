@@ -14,3 +14,4 @@ So far this collection consists of:
 - Tags Dropdown     - Creates a dropdown of all tags on your Wordpress site.
 - Text Editor       - Creates a textbox with the TinyMce textarea.
 - Textarea          - Create a textarea input field
+- Taxonomy Dropdown - Create a dropdown of taxonomies (Usage: see [Gist 4538951](https://gist.github.com/4538951) )
