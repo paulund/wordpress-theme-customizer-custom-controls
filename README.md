@@ -16,3 +16,4 @@ So far this collection consists of:
 - Textarea           - Creates a textarea input field
 - Taxonomy Dropdown  - Creates a dropdown of taxonomies ( Usage: see [Gist 4538951](https://gist.github.com/4538951) )
 - User List Dropdown - Creates a dropdown of users for a role ( Usage: see [Gist 4564337](https://gist.github.com/4564337) )
+- Google Fonts Dropdown - Create a dropdown to show you the 30 most popular fonts on Google web fonts
