@@ -49,9 +49,9 @@ if ( ! class_exists( 'WP_Customize_Control' ) )
      * @return String
      */
     public function get_fonts( $amount = 30 )
-    {
-        $selectDirectory = get_stylesheet_directory().'/wordpress-theme-customizer-custom-controls/select/';
-        $selectDirectoryInc = get_stylesheet_directory().'/inc/wordpress-theme-customizer-custom-controls/select/';
+    {   //Fixes errors when using non standard installation folders
+        $selectDirectory = dirname(__FILE__);
+        $selectDirectoryInc = dirname(__FILE__);
 
         $finalselectDirectory = '';
 
