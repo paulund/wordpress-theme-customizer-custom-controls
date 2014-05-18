@@ -70,7 +70,7 @@ if ( ! class_exists( 'WP_Customize_Control' ) )
         //Total time the file will be cached in seconds, set to a week
         $cachetime = 86400 * 7;
 
-        if(file_exists($fontFile) && $cachetime < filemtime($fontFile))
+        if(file_exists($fontFile) && time() - $cachetime < filemtime($fontFile))
         {
             $content = json_decode(file_get_contents($fontFile));
         } else {
