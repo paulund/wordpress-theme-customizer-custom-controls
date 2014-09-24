@@ -27,17 +27,21 @@ if ( ! class_exists( 'WP_Customize_Control' ) )
         {
             ?>
                 <label>
-                    <span class="customize-category-select-control"><?php echo esc_html( $this->label ); ?></span>
+                    <span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
                     <select <?php $this->link(); ?>>
                         <?php
                             foreach ( $this->fonts as $k => $v )
                             {
-                                printf('<option value="%s" %s>%s</option>', $k, selected($this->value(), $k, false), $v->family);
+                                printf('<option value="%s" %s>%s</option>', $v->family, selected($this->value(), $v->family, false), $v->family);
                             }
                         ?>
                     </select>
                 </label>
             <?php
+        } else {
+        ?>
+        	<p>The font list is empty.</p>
+        <?php
         }
     }
 
@@ -48,10 +52,17 @@ if ( ! class_exists( 'WP_Customize_Control' ) )
      *
      * @return String
      */
-    public function get_fonts( $amount = 30 )
+    public function get_fonts( $amount = 600 )
     {
-        $selectDirectory = get_stylesheet_directory().'/wordpress-theme-customizer-custom-controls/select/';
-        $selectDirectoryInc = get_stylesheet_directory().'/inc/wordpress-theme-customizer-custom-controls/select/';
+		global $wp_filesystem;
+		// Initialize the WP filesystem, no more using 'file-put-contents' function
+		if (empty($wp_filesystem)) {
+			require_once (ABSPATH . '/wp-admin/includes/file.php');
+			WP_Filesystem();
+		}
+		
+        $selectDirectory = get_stylesheet_directory().'/tbnframework/admin/options/customizer-custon-controls/select/';
+        $selectDirectoryInc = get_template_directory().'/tbnframework/admin/options/customizer-custon-controls/select/';
 
         $finalselectDirectory = '';
 
@@ -66,31 +77,36 @@ if ( ! class_exists( 'WP_Customize_Control' ) )
         }
 
         $fontFile = $finalselectDirectory . '/cache/google-web-fonts.txt';
-
-        //Total time the file will be cached in seconds, set to a week
-        $cachetime = 86400 * 7;
-
-        if(file_exists($fontFile) && $cachetime < filemtime($fontFile))
+		
+        //Total time the file will be cached in seconds, set to 180 days
+        $cachetime = 86400 * 180;
+        if(file_exists($fontFile) && time() - $cachetime < filemtime($fontFile))
         {
-            $content = json_decode(file_get_contents($fontFile));
+            $content = json_decode($wp_filesystem->get_contents($fontFile));
         } else {
-
-            $googleApi = 'https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key={API_KEY}';
+			$Api = '';
+            $googleApi = 'https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key='.$Api;
 
             $fontContent = wp_remote_get( $googleApi, array('sslverify'   => false) );
 
-            $fp = fopen($fontFile, 'w');
-            fwrite($fp, $fontContent['body']);
-            fclose($fp);
+			if( $wp_filesystem ) {
+					$wp_filesystem->put_contents(
+					$fontFile,
+					$fontContent['body'],
+					FS_CHMOD_FILE // predefined mode settings for WP files
+				);
+			}
 
             $content = json_decode($fontContent['body']);
         }
-
-        if($amount == 'all')
-        {
-            return $content->items;
+	if( !empty($content->items) ) {
+        	if($amount == 'all') {
+            		return $content->items;
+        	} else {
+			return array_slice($content->items, 0, $amount);
+        	}
         } else {
-            return array_slice($content->items, 0, $amount);
+        	return false;
         }
     }
  }
