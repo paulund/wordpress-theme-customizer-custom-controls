@@ -27,8 +27,8 @@ class Taxonomy_Dropdown_Custom_Control extends WP_Customize_Control
 	 */
 	public function render_content()
     {
-        // call wp_dropdown_cats to get data and add to select field
-        add_action( 'wp_dropdown_cats', array( $this, 'wp_dropdown_cats' ) );
+        // call wp_dropdown_categories to get data and add to select field
+        add_action( 'wp_dropdown_categories', array( $this, 'wp_dropdown_categories' ) );
 
 		// Set defaults
 		$this->defaults = array(
@@ -59,7 +59,7 @@ class Taxonomy_Dropdown_Custom_Control extends WP_Customize_Control
      * @since   11/14/2012
      * @return  String $output
      */
-    public function wp_dropdown_cats( $output )
+    public function wp_dropdown_categories( $output )
     {
         $output = str_replace( '<select', '<select ' . $this->get_link(), $output );
 
